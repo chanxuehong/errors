@@ -1,9 +1,40 @@
 package errors
 
+import "fmt"
+
 func WithMessage(err error, msg string) error {
 	if err == nil {
 		return nil
 	}
+	if msg == "" {
+		return err
+	}
+	v, ok := err.(StackTracer)
+	if !ok {
+		return &withMessage{
+			cause: err,
+			msg:   msg,
+		}
+	}
+	stack := v.StackTrace()
+	if len(stack) == 0 {
+		return &withMessage{
+			cause: err,
+			msg:   msg,
+		}
+	}
+	return &withMessageStack{
+		cause: err,
+		msg:   msg,
+		stack: stack,
+	}
+}
+
+func WithMessagef(err error, format string, args ...interface{}) error {
+	if err == nil {
+		return nil
+	}
+	msg := fmt.Sprintf(format, args...)
 	if msg == "" {
 		return err
 	}
