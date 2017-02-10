@@ -3,69 +3,27 @@ package errors
 import "fmt"
 
 func WithStack(err error) error {
-	if err == nil {
-		return nil
-	}
-	v, ok := err.(StackTracer)
-	if !ok {
-		return &withMessageStack{
-			cause: err,
-			msg:   "",
-			stack: callers(),
-		}
-	}
-	stack := v.StackTrace()
-	if len(stack) == 0 {
-		return &withMessageStack{
-			cause: err,
-			msg:   "",
-			stack: callers(),
-		}
-	}
-	return err // TODO 强制转换到这个包的类型?
+	return wrap(err, "")
 }
 
 func Wrap(err error, msg string) error {
-	if err == nil {
-		return nil
-	}
-	v, ok := err.(StackTracer)
-	if !ok {
-		return &withMessageStack{
-			cause: err,
-			msg:   msg,
-			stack: callers(),
-		}
-	}
-	stack := v.StackTrace()
-	if len(stack) == 0 {
-		return &withMessageStack{
-			cause: err,
-			msg:   msg,
-			stack: callers(),
-		}
-	}
-	if msg == "" {
-		return err // TODO 强制转换到这个包的类型?
-	}
-	return &withMessageStack{
-		cause: err,
-		msg:   msg,
-		stack: stack,
-	}
+	return wrap(err, msg)
 }
 
 func Wrapf(err error, format string, args ...interface{}) error {
+	return wrap(err, fmt.Sprintf(format, args...))
+}
+
+func wrap(err error, msg string) error {
 	if err == nil {
 		return nil
 	}
-	msg := fmt.Sprintf(format, args...)
 	v, ok := err.(StackTracer)
 	if !ok {
 		return &withMessageStack{
 			cause: err,
 			msg:   msg,
-			stack: callers(),
+			stack: callers(3),
 		}
 	}
 	stack := v.StackTrace()
@@ -73,7 +31,7 @@ func Wrapf(err error, format string, args ...interface{}) error {
 		return &withMessageStack{
 			cause: err,
 			msg:   msg,
-			stack: callers(),
+			stack: callers(3),
 		}
 	}
 	if msg == "" {

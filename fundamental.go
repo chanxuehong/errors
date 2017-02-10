@@ -5,7 +5,7 @@ import "fmt"
 func New(msg string) error {
 	return &fundamental{
 		msg:   msg,
-		stack: callers(),
+		stack: callers(2),
 	}
 }
 
@@ -13,7 +13,7 @@ func Errorf(format string, args ...interface{}) error {
 	msg := fmt.Sprintf(format, args...)
 	return &fundamental{
 		msg:   msg,
-		stack: callers(),
+		stack: callers(2),
 	}
 }
 
