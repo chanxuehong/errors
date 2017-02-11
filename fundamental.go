@@ -2,6 +2,8 @@ package errors
 
 import "fmt"
 
+// New returns an error with the supplied message.
+// New also records the stack trace at the point it was called.
 func New(msg string) error {
 	return &fundamental{
 		msg:   msg,
@@ -9,6 +11,8 @@ func New(msg string) error {
 	}
 }
 
+// Errorf returns an error with the message fmt.Sprintf(format, args...).
+// Errorf also records the stack trace at the point it was called.
 func Errorf(format string, args ...interface{}) error {
 	msg := fmt.Sprintf(format, args...)
 	return &fundamental{

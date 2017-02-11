@@ -1,5 +1,11 @@
 package errors
 
+// Cause returns the underlying cause of the error, if possible.
+// An error value has a cause if it implements the Causer interface.
+//
+// If the error does not implement Causer interface, the original error will
+// be returned.
+// If the error is nil, nil will be returned without further investigation.
 func Cause(err error) error {
 	var (
 		causer Causer
@@ -22,6 +28,10 @@ type Causer interface {
 	Cause() error
 }
 
+// String returns the error message of err.
+// If err does not implement StackTracer interface, String returns err.Error(),
+// else it returns a string that contains both the error message and the callstack.
+// If err is nil, String returns "".
 func String(err error) string {
 	if err == nil {
 		return ""

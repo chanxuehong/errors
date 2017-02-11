@@ -2,6 +2,9 @@ package errors
 
 import "fmt"
 
+// WithMessage annotates err with a new message.
+// If err is a StackTracer, the result of WithMessage will also have the same stack trace as err.
+// If err is nil, WithMessage returns nil.
 func WithMessage(err error, msg string) error {
 	if err == nil {
 		return nil
@@ -30,6 +33,9 @@ func WithMessage(err error, msg string) error {
 	}
 }
 
+// WithMessagef annotates err with a new message fmt.Sprintf(format, args...).
+// If err is a StackTracer, the result of WithMessagef will also have the same stack trace as err.
+// If err is nil, WithMessagef returns nil.
 func WithMessagef(err error, format string, args ...interface{}) error {
 	return WithMessage(err, fmt.Sprintf(format, args...))
 }

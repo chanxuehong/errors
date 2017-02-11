@@ -2,14 +2,25 @@ package errors
 
 import "fmt"
 
+// WithStack annotates err with a stack trace at the point WithStack was called.
+// If err is a StackTracer, the result of WithStack will also have the same stack trace as err.
+// If err is nil, WithStack returns nil.
 func WithStack(err error) error {
 	return wrap(err, "")
 }
 
+// Wrap returns an error annotating err with a stack trace
+// at the point Wrap was called, and the supplied message.
+// If err is a StackTracer, the result of Wrap will also have the same stack trace as err.
+// If err is nil, Wrap returns nil.
 func Wrap(err error, msg string) error {
 	return wrap(err, msg)
 }
 
+// Wrapf returns an error annotating err with a stack trace
+// at the point Wrapf was called, and the message fmt.Sprintf(format, args...).
+// If err is a StackTracer, the result of Wrapf will also have the same stack trace as err.
+// If err is nil, Wrapf returns nil.
 func Wrapf(err error, format string, args ...interface{}) error {
 	return wrap(err, fmt.Sprintf(format, args...))
 }
