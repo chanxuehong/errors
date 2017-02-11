@@ -47,11 +47,13 @@ func wrap(err error, msg string) error {
 var _ error = (*withMessageStack)(nil)
 var _ Causer = (*withMessageStack)(nil)
 var _ StackTracer = (*withMessageStack)(nil)
+var _ errorStacker = (*withMessageStack)(nil)
 
 type withMessageStack struct {
-	cause error
-	msg   string
-	stack []uintptr
+	cause       error
+	msg         string
+	stack       []uintptr
+	stackString string
 }
 
 // implements error
@@ -62,18 +64,26 @@ func (w *withMessageStack) Error() string {
 	return w.msg + ": " + w.cause.Error()
 }
 
-// implements causer
+// implements Causer
 func (w *withMessageStack) Cause() error {
 	return w.cause
 }
 
-// implements causer
+// implements Causer
 func (w *withMessageStack) IID_93FF6FA1EDC311E6B34F38C98633AC15() {}
 
-// implements stackTracer
+// implements StackTracer
 func (w *withMessageStack) StackTrace() []uintptr {
 	return w.stack
 }
 
-// implements stackTracer
+// implements StackTracer
 func (w *withMessageStack) IID_9BB74855EDC311E689C438C98633AC15() {}
+
+// implements errorStacker
+func (w *withMessageStack) errorStack() string {
+	if w.stackString == "" {
+		w.stackString = stackString(w.stack)
+	}
+	return w.Error() + "\n" + w.stackString
+}

@@ -47,10 +47,10 @@ func (w *withMessage) Error() string {
 	return w.msg + ": " + w.cause.Error()
 }
 
-// implements causer
+// implements Causer
 func (w *withMessage) Cause() error {
 	return w.cause
 }
 
-// implements causer
+// implements Causer
 func (w *withMessage) IID_93FF6FA1EDC311E6B34F38C98633AC15() {}
