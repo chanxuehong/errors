@@ -9,7 +9,7 @@ package main
 
 import (
 	stderrors "errors"
-	"log"
+	"fmt"
 
 	"github.com/chanxuehong/errors"
 )
@@ -17,7 +17,7 @@ import (
 func main() {
 	err := test3()
 	if err != nil {
-		log.Println(errors.String(err))
+		fmt.Println(errors.String(err))
 		return
 	}
 }
@@ -37,7 +37,7 @@ func test1() error {
 func test2() error {
 	err := test1()
 	if err != nil {
-		return errors.Wrap(test1(), "test2 wrap message")
+		return errors.Wrap(err, "test2 wrap message")
 	}
 	return nil
 }
@@ -51,19 +51,19 @@ func test3() error {
 }
 ```
 
-result:
+The result is:
 ```
-2017/02/11 13:48:49 test2 wrap message: original message
+test2 wrap message: original message
 main.test1
-        /Users/chan/gopath/src/test1/main.go:25
+	/Users/chan/gopath/src/test1/main.go:25
 main.test2
-        /Users/chan/gopath/src/test1/main.go:33
+	/Users/chan/gopath/src/test1/main.go:31
 main.test3
-        /Users/chan/gopath/src/test1/main.go:39
+	/Users/chan/gopath/src/test1/main.go:39
 main.main
-        /Users/chan/gopath/src/test1/main.go:11
+	/Users/chan/gopath/src/test1/main.go:11
 runtime.main
-        /usr/local/go/src/runtime/proc.go:185
+	/usr/local/go/src/runtime/proc.go:185
 runtime.goexit
-        /usr/local/go/src/runtime/asm_amd64.s:2197
+	/usr/local/go/src/runtime/asm_amd64.s:2197
 ```
