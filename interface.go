@@ -2,15 +2,15 @@ package errors
 
 func Cause(err error) error {
 	var (
-		cause Causer
-		ok    bool
+		causer Causer
+		ok     bool
 	)
 	for err != nil {
-		cause, ok = err.(Causer)
+		causer, ok = err.(Causer)
 		if !ok {
 			break
 		}
-		err = cause.Cause()
+		err = causer.Cause()
 	}
 	return err
 }

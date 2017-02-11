@@ -28,9 +28,9 @@ func stackString(stack []uintptr) string {
 		frame, more = frames.Next()
 		if frame.Function == "" {
 			frame.Function = "unknown_function"
-			if frame.File == "" {
-				frame.File = "unknown_file"
-			}
+		}
+		if frame.File == "" {
+			frame.File = "unknown_file"
 		}
 		if buf.Len() > 0 {
 			buf.WriteByte('\n')

@@ -35,7 +35,7 @@ func wrap(err error, msg string) error {
 		}
 	}
 	if msg == "" {
-		return err // TODO 强制转换到这个包的类型?
+		return err // TODO convert to *withMessageStack if err type is not *withMessageStack or *fundamental?
 	}
 	return &withMessageStack{
 		cause: err,
