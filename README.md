@@ -29,7 +29,7 @@ func test0() error {
 func test1() error {
 	err := test0()
 	if err != nil {
-		return errors.WithStack(err)
+		return errors.Wrap(err)
 	}
 	return nil
 }
@@ -45,7 +45,7 @@ func test2() error {
 func test3() error {
 	err := test2()
 	if err != nil {
-		return errors.WithStack(err)
+		return errors.Wrap(err)
 	}
 	return nil
 }
@@ -55,15 +55,15 @@ The result is:
 ```
 test2 wrap message: original message
 main.test1
-	/Users/chan/gopath/src/test1/main.go:25
+        /Users/chan/gopath/src/test1/main.go:25
 main.test2
-	/Users/chan/gopath/src/test1/main.go:31
+        /Users/chan/gopath/src/test1/main.go:31
 main.test3
-	/Users/chan/gopath/src/test1/main.go:39
+        /Users/chan/gopath/src/test1/main.go:39
 main.main
-	/Users/chan/gopath/src/test1/main.go:11
+        /Users/chan/gopath/src/test1/main.go:11
 runtime.main
-	/usr/local/go/src/runtime/proc.go:185
+        /usr/local/go/src/runtime/proc.go:185
 runtime.goexit
-	/usr/local/go/src/runtime/asm_amd64.s:2197
+        /usr/local/go/src/runtime/asm_amd64.s:2197
 ```
