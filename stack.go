@@ -2,8 +2,10 @@ package errors
 
 import (
 	"bytes"
+	"path"
 	"runtime"
 	"strconv"
+	"strings"
 )
 
 func callers(skip int) []uintptr {
@@ -20,24 +22,36 @@ func stackString(stack []uintptr) string {
 	frames := runtime.CallersFrames(stack)
 
 	var (
-		buf   bytes.Buffer
-		frame runtime.Frame
-		more  bool
+		frame    runtime.Frame
+		more     bool
+		funcName string
+		fileName string
+		buf      bytes.Buffer
 	)
 	for {
 		frame, more = frames.Next()
+		if frame.Function == "runtime.main" {
+			break
+		}
+		if frame.Function == "runtime.goexit" {
+			break
+		}
 		if frame.Function == "" {
-			frame.Function = "unknown_function"
+			funcName = "unknown_function"
+		} else {
+			funcName = trimFuncName(frame.Function)
 		}
 		if frame.File == "" {
-			frame.File = "unknown_file"
+			fileName = "unknown_file"
+		} else {
+			fileName = trimFileName(frame.File)
 		}
 		if buf.Len() > 0 {
 			buf.WriteByte('\n')
 		}
-		buf.WriteString(frame.Function)
+		buf.WriteString(funcName)
 		buf.WriteString("\n\t")
-		buf.WriteString(frame.File)
+		buf.WriteString(fileName)
 		buf.WriteByte(':')
 		buf.WriteString(strconv.Itoa(frame.Line))
 
@@ -46,4 +60,21 @@ func stackString(stack []uintptr) string {
 		}
 	}
 	return buf.String()
+}
+
+func trimFileName(name string) string {
+	i := strings.Index(name, "/src/")
+	if i < 0 {
+		return name
+	}
+	name = name[i+len("/src/"):]
+	i = strings.Index(name, "/vendor/")
+	if i < 0 {
+		return name
+	}
+	return name[i+len("/vendor/"):]
+}
+
+func trimFuncName(name string) string {
+	return path.Base(name)
 }
