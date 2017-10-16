@@ -6,7 +6,7 @@ import (
 )
 
 // Wrap returns an error annotating err with a stack trace
-// at the point Wrap was called, and the supplied messages.
+// at the point Wrap was called if err does not implement StackTracer, and the supplied messages.
 // If err is a StackTracer, the result of Wrap will also have the same stack trace as err.
 // If err is nil, Wrap returns nil.
 func Wrap(err error, msg ...string) error {
@@ -21,7 +21,7 @@ func WrapWithStackAlways(err error, msg ...string) error {
 }
 
 // Wrapf returns an error annotating err with a stack trace
-// at the point Wrapf was called, and the message fmt.Sprintf(format, args...).
+// at the point Wrapf was called if err does not implement StackTracer, and the message fmt.Sprintf(format, args...).
 // If err is a StackTracer, the result of Wrapf will also have the same stack trace as err.
 // If err is nil, Wrapf returns nil.
 func Wrapf(err error, format string, args ...interface{}) error {
