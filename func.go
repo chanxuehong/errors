@@ -14,9 +14,9 @@ func New(msg string) error {
 	}
 }
 
-// Errorf returns an error with the message fmt.Sprintf(format, args...).
-// Errorf also records the stack trace at the point it was called.
-func Errorf(format string, args ...interface{}) error {
+// Newf returns an error with the message fmt.Sprintf(format, args...).
+// Newf also records the stack trace at the point it was called.
+func Newf(format string, args ...interface{}) error {
 	msg := fmt.Sprintf(format, args...)
 	return &fundamental{
 		msg:   msg,
@@ -32,10 +32,10 @@ func Wrap(err error, msg ...string) error {
 	return wrap(err, strings.Join(msg, ": "), false)
 }
 
-// WrapWithStackAlways returns an error annotating err with a stack trace
-// at the point WrapWithStackAlways is called, and the supplied message.
-// If err is nil, WrapWithStackAlways returns nil.
-func WrapWithStackAlways(err error, msg ...string) error {
+// WrapWithCurrentStackAlways returns an error annotating err with a stack trace
+// at the point WrapWithCurrentStackAlways is called, and the supplied message.
+// If err is nil, WrapWithCurrentStackAlways returns nil.
+func WrapWithCurrentStackAlways(err error, msg ...string) error {
 	return wrap(err, strings.Join(msg, ": "), true)
 }
 
@@ -47,10 +47,10 @@ func Wrapf(err error, format string, args ...interface{}) error {
 	return wrap(err, fmt.Sprintf(format, args...), false)
 }
 
-// WrapfWithStackAlways returns an error annotating err with a stack trace
-// at the point WrapfWithStackAlways is call, and the format specifier.
-// If err is nil, WrapfWithStackAlways returns nil.
-func WrapfWithStackAlways(err error, format string, args ...interface{}) error {
+// WrapfWithCurrentStackAlways returns an error annotating err with a stack trace
+// at the point WrapfWithCurrentStackAlways is call, and the format specifier.
+// If err is nil, WrapfWithCurrentStackAlways returns nil.
+func WrapfWithCurrentStackAlways(err error, format string, args ...interface{}) error {
 	return wrap(err, fmt.Sprintf(format, args...), true)
 }
 
