@@ -1,11 +1,7 @@
 package errors
 
-type Causer interface {
+type causer interface {
 	Cause() error
-}
-
-type StackTracer interface {
-	StackTrace() (stack []uintptr)
 }
 
 type errorStacker interface {

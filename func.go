@@ -59,7 +59,7 @@ func wrap(err error, msg string, withCurrentStackAlways bool) error {
 		return nil
 	}
 	if !withCurrentStackAlways {
-		if v, ok := err.(StackTracer); ok && len(v.StackTrace()) > 0 {
+		if _, ok := err.(errorStacker); ok {
 			if msg == "" {
 				return err
 			} else {
@@ -72,7 +72,7 @@ func wrap(err error, msg string, withCurrentStackAlways bool) error {
 	}
 	if msg == "" {
 		return &withStack{
-			cause: err,
+			error: err,
 			stack: callers(3),
 		}
 	} else {
@@ -87,18 +87,13 @@ func wrap(err error, msg string, withCurrentStackAlways bool) error {
 }
 
 // Cause returns the underlying cause of the error, if possible.
-// An error value has a cause if it implements the Causer interface.
+// An error value has a cause if it implements the causer interface.
 //
-// If the error does not implement Causer interface, the original error will
-// be returned.
+// If the error does not implement causer interface, the original error will be returned.
 // If the error is nil, nil will be returned without further investigation.
 func Cause(err error) error {
-	var (
-		causer Causer
-		ok     bool
-	)
 	for err != nil {
-		causer, ok = err.(Causer)
+		causer, ok := err.(causer)
 		if !ok {
 			break
 		}
@@ -107,24 +102,16 @@ func Cause(err error) error {
 	return err
 }
 
-// String returns the error message of err.
-// If err does not implement StackTracer interface, String returns err.Error(),
+// ErrorStack returns the error message of err.
+// If err does not implement errorStacker interface, ErrorStack returns err.Error(),
 // else it returns a string that contains both the error message and the callstack.
-// If err is nil, String returns "".
-func String(err error) string {
+// If err is nil, ErrorStack returns "".
+func ErrorStack(err error) string {
 	if err == nil {
 		return ""
 	}
 	if v, ok := err.(errorStacker); ok {
 		return v.ErrorStack()
 	}
-	v, ok := err.(StackTracer)
-	if !ok {
-		return err.Error()
-	}
-	stack := v.StackTrace()
-	if len(stack) == 0 {
-		return err.Error()
-	}
-	return err.Error() + "\n" + stackString(stack)
+	return err.Error()
 }

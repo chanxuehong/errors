@@ -17,7 +17,7 @@ import (
 func main() {
 	err := test3()
 	if err != nil {
-		fmt.Println(errors.String(err))
+		fmt.Println(errors.ErrorStack(err))
 		return
 	}
 }
@@ -53,17 +53,14 @@ func test3() error {
 
 The result is:
 ```
-test2 wrap message: original message
+original message
 main.test1
-        /Users/chan/gopath/src/test1/main.go:25
+	test2/main.go:25
 main.test2
-        /Users/chan/gopath/src/test1/main.go:31
+	test2/main.go:31
 main.test3
-        /Users/chan/gopath/src/test1/main.go:39
+	test2/main.go:39
 main.main
-        /Users/chan/gopath/src/test1/main.go:11
-runtime.main
-        /usr/local/go/src/runtime/proc.go:185
-runtime.goexit
-        /usr/local/go/src/runtime/asm_amd64.s:2197
+	test2/main.go:11
+test2 wrap message
 ```
