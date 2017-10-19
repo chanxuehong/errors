@@ -5,17 +5,15 @@ type withMessage struct {
 	msg   string
 }
 
-func (w *withMessage) Error() string { return w.msg + ": " + w.cause.Error() }
+func (e *withMessage) Error() string { return e.msg + ": " + e.cause.Error() }
 
-func (w *withMessage) Cause() error { return w.cause }
+func (e *withMessage) Cause() error { return e.cause }
 
-func (w *withMessage) StackTrace() ([]uintptr, bool) {
-	if cause, ok := w.Cause().(StackTracer); ok {
+func (e *withMessage) StackTrace() []uintptr {
+	if cause, ok := e.Cause().(StackTracer); ok {
 		return cause.StackTrace()
 	}
-	return nil, false
+	return nil
 }
 
-func (w *withMessage) ErrorStack() string {
-	return String(w.cause) + "\n" + w.msg
-}
+func (e *withMessage) ErrorStack() string { return String(e.cause) + "\n" + e.msg }

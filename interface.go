@@ -5,7 +5,7 @@ type Causer interface {
 }
 
 type StackTracer interface {
-	StackTrace() (stack []uintptr, ok bool)
+	StackTrace() (stack []uintptr)
 }
 
 type errorStacker interface {

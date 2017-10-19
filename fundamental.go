@@ -5,8 +5,8 @@ type fundamental struct {
 	stack []uintptr
 }
 
-func (f *fundamental) Error() string { return f.msg }
+func (e *fundamental) Error() string { return e.msg }
 
-func (f *fundamental) StackTrace() ([]uintptr, bool) { return f.stack, true }
+func (e *fundamental) StackTrace() []uintptr { return e.stack }
 
-func (f *fundamental) ErrorStack() string { return f.msg + "\n" + stackString(f.stack) }
+func (e *fundamental) ErrorStack() string { return e.msg + "\n" + stackString(e.stack) }

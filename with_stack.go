@@ -5,12 +5,10 @@ type withStack struct {
 	stack []uintptr
 }
 
-func (w *withStack) Error() string { return w.cause.Error() }
+func (e *withStack) Error() string { return e.cause.Error() }
 
-func (w *withStack) Cause() error { return w.cause }
+func (e *withStack) Cause() error { return e.cause }
 
-func (w *withStack) StackTrace() ([]uintptr, bool) { return w.stack, true }
+func (e *withStack) StackTrace() []uintptr { return e.stack }
 
-func (w *withStack) ErrorStack() string {
-	return String(w.cause) + "\n" + stackString(w.stack)
-}
+func (e *withStack) ErrorStack() string { return String(e.cause) + "\n" + stackString(e.stack) }

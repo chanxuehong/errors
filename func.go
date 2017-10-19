@@ -54,42 +54,35 @@ func WrapfWithCurrentStackAlways(err error, format string, args ...interface{}) 
 	return wrap(err, fmt.Sprintf(format, args...), true)
 }
 
-func wrap(err error, msg string, withStackAlways bool) error {
+func wrap(err error, msg string, withCurrentStackAlways bool) error {
 	if err == nil {
 		return nil
 	}
-	if withStackAlways {
-		if msg != "" {
-			err = &withMessage{
-				cause: err,
-				msg:   msg,
+	if !withCurrentStackAlways {
+		if v, ok := err.(StackTracer); ok && len(v.StackTrace()) > 0 {
+			if msg == "" {
+				return err
+			} else {
+				return &withMessage{
+					cause: err,
+					msg:   msg,
+				}
 			}
 		}
+	}
+	if msg == "" {
 		return &withStack{
 			cause: err,
 			stack: callers(3),
 		}
-	}
-	if v, ok := err.(StackTracer); ok {
-		if stack, ok := v.StackTrace(); ok && len(stack) > 0 {
-			if msg == "" {
-				return err
-			}
-			return &withMessage{
+	} else {
+		return &withMessageStack{
+			withMessage: withMessage{
 				cause: err,
 				msg:   msg,
-			}
+			},
+			stack: callers(3),
 		}
-	}
-	if msg != "" {
-		err = &withMessage{
-			cause: err,
-			msg:   msg,
-		}
-	}
-	return &withStack{
-		cause: err,
-		stack: callers(3),
 	}
 }
 
@@ -129,7 +122,7 @@ func String(err error) string {
 	if !ok {
 		return err.Error()
 	}
-	stack, _ := v.StackTrace()
+	stack := v.StackTrace()
 	if len(stack) == 0 {
 		return err.Error()
 	}
