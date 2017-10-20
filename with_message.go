@@ -12,7 +12,7 @@ var (
 	_ fmt.Formatter = (*withMessage)(nil)
 )
 
-// withMessage must contains stacktrace because withMessage is created only and only if it's cause contains stacktrace.
+// withMessage must contains stacktrace because withMessage is created if and only if it's cause contains stacktrace.
 type withMessage struct {
 	cause error
 	msg   string
