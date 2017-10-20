@@ -13,11 +13,13 @@ var (
 )
 
 type withStack struct {
-	error
+	cause error
 	stack []uintptr
 }
 
-func (e *withStack) Cause() error { return e.error }
+func (e *withStack) Error() string { return e.Cause().Error() }
+
+func (e *withStack) Cause() error { return e.cause }
 
 func (e *withStack) ErrorStack() string { return ErrorStack(e.Cause()) + "\n" + stackString(e.stack) }
 

@@ -13,12 +13,17 @@ var (
 )
 
 type withMessageStack struct {
-	withMessage
+	cause error
+	msg   string
 	stack []uintptr
 }
 
+func (e *withMessageStack) Error() string { return e.Cause().Error() + ": " + e.msg }
+
+func (e *withMessageStack) Cause() error { return e.cause }
+
 func (e *withMessageStack) ErrorStack() string {
-	return e.withMessage.ErrorStack() + "\n" + stackString(e.stack)
+	return ErrorStack(e.Cause()) + "\n" + e.msg + "\n" + stackString(e.stack)
 }
 
 func (e *withMessageStack) Format(s fmt.State, verb rune) {

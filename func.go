@@ -62,27 +62,23 @@ func wrap(err error, msg string, withCurrentStackAlways bool) error {
 		if _, ok := err.(errorStacker); ok {
 			if msg == "" {
 				return err
-			} else {
-				return &withMessage{
-					cause: err,
-					msg:   msg,
-				}
+			}
+			return &withMessage{
+				cause: err,
+				msg:   msg,
 			}
 		}
 	}
 	if msg == "" {
 		return &withStack{
-			error: err,
+			cause: err,
 			stack: callers(3),
 		}
-	} else {
-		return &withMessageStack{
-			withMessage: withMessage{
-				cause: err,
-				msg:   msg,
-			},
-			stack: callers(3),
-		}
+	}
+	return &withMessageStack{
+		cause: err,
+		msg:   msg,
+		stack: callers(3),
 	}
 }
 
@@ -92,14 +88,20 @@ func wrap(err error, msg string, withCurrentStackAlways bool) error {
 // If the error does not implement causer interface, the original error will be returned.
 // If the error is nil, nil will be returned without further investigation.
 func Cause(err error) error {
-	for err != nil {
+	if err == nil {
+		return nil
+	}
+	for {
 		causer, ok := err.(causer)
 		if !ok {
-			break
+			return err
 		}
-		err = causer.Cause()
+		cause := causer.Cause()
+		if cause == nil {
+			return err
+		}
+		err = cause
 	}
-	return err
 }
 
 // ErrorStack returns the error message of err.
