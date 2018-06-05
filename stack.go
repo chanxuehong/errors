@@ -63,16 +63,15 @@ func stackString(stack []uintptr) string {
 }
 
 func trimFileName(name string) string {
-	i := strings.Index(name, "/src/")
-	if i < 0 {
-		return name
+	i := strings.Index(name, "/src/") + len("/src/")
+	if i >= len("/src/") && i < len(name) /* BCE */ {
+		name = name[i:]
 	}
-	name = name[i+len("/src/"):]
-	i = strings.Index(name, "/vendor/")
-	if i < 0 {
-		return name
+	i = strings.LastIndex(name, "/vendor/") + len("/vendor/")
+	if i >= len("/vendor/") && i < len(name) /* BCE */ {
+		return name[i:]
 	}
-	return name[i+len("/vendor/"):]
+	return name
 }
 
 func trimFuncName(name string) string {
