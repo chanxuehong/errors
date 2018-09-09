@@ -1,7 +1,6 @@
 package errors
 
 import (
-	"bytes"
 	"path"
 	"runtime"
 	"strconv"
@@ -26,7 +25,7 @@ func stackString(stack []uintptr) string {
 		more     bool
 		funcName string
 		fileName string
-		buf      bytes.Buffer
+		buf      strings.Builder
 	)
 	for {
 		frame, more = frames.Next()
